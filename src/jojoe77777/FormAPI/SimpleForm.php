@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace jojoe77777\FormAPI;
 
@@ -8,12 +8,12 @@ use pocketmine\form\FormValidationException;
 
 class SimpleForm extends Form {
 
-    const IMAGE_TYPE_PATH = 0;
-    const IMAGE_TYPE_URL = 1;
+    public const IMAGE_TYPE_PATH = 0;
+    public const IMAGE_TYPE_URL = 1;
 
-    /** @var string */
-    private string $content = "";
-
+    /**
+     * @var array
+     */
     private array $labelMap = [];
 
     /**
@@ -23,17 +23,21 @@ class SimpleForm extends Form {
         parent::__construct($callable);
         $this->data["type"] = "form";
         $this->data["title"] = "";
-        $this->data["content"] = $this->content;
+        $this->data["content"] = "";
         $this->data["buttons"] = [];
     }
 
-    public function processData(&$data) : void {
-        if($data !== null) {
-            if(!is_int($data)) {
+    /**
+     * @param mixed $data
+     * @return void
+     */
+    public function processData(mixed &$data): void {
+        if ($data !== null) {
+            if (!is_int($data)) {
                 throw new FormValidationException("Expected an integer response, got " . gettype($data));
             }
             $count = count($this->data["buttons"]);
-            if($data >= $count || $data < 0) {
+            if ($data >= $count || $data < 0) {
                 throw new FormValidationException("Button $data does not exist");
             }
             $data = $this->labelMap[$data] ?? null;
@@ -44,7 +48,7 @@ class SimpleForm extends Form {
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title) : self {
+    public function setTitle(string $title): self {
         $this->data["title"] = $title;
         return $this;
     }
@@ -52,14 +56,14 @@ class SimpleForm extends Form {
     /**
      * @return string
      */
-    public function getTitle() : string {
+    public function getTitle(): string {
         return $this->data["title"];
     }
 
     /**
      * @return string
      */
-    public function getContent() : string {
+    public function getContent(): string {
         return $this->data["content"];
     }
 
@@ -67,7 +71,7 @@ class SimpleForm extends Form {
      * @param string $content
      * @return $this
      */
-    public function setContent(string $content) : self {
+    public function setContent(string $content): self {
         $this->data["content"] = $content;
         return $this;
     }
@@ -79,13 +83,12 @@ class SimpleForm extends Form {
      * @param string|null $label
      * @return $this
      */
-    public function addButton(string $text, int $imageType = -1, string $imagePath = "", ?string $label = null) : self {
-        $content = ["text" => $text];
-        if($imageType !== -1) {
-            $content["image"]["type"] = $imageType === 0 ? "path" : "url";
-            $content["image"]["data"] = $imagePath;
+    public function addButton(string $text, int $imageType = -1, string $imagePath = "", ?string $label = null): self {
+        $button = ["text" => $text];
+        if (in_array($imageType, [self::IMAGE_TYPE_PATH, self::IMAGE_TYPE_URL]) && $imagePath !== "") {
+            $button["image"] = ["type" => $imageType === self::IMAGE_TYPE_PATH ? "path" : "url", "data" => $imagePath];
         }
-        $this->data["buttons"][] = $content;
+        $this->data["buttons"][] = $button;
         $this->labelMap[] = $label ?? count($this->labelMap);
         return $this;
     }
