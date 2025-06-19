@@ -111,7 +111,7 @@ class CustomForm extends Form {
      * @param string|null $tooltip
      * @return $this
      */
-    public function addToggle(string $text, bool $default = null, ?string $label = null, ?string $tooltip = null): self {
+    public function addToggle(string $text, ?bool $default = null, ?string $label = null, ?string $tooltip = null): self {
         $content = ["type" => "toggle", "text" => $text];
         if ($default !== null) {
             $content["default"] = $default;
@@ -204,7 +204,7 @@ class CustomForm extends Form {
      * @param string|null $tooltip
      * @return $this
      */
-    public function addInput(string $text, string $placeholder = "", string $default = null, ?string $label = null, ?string $tooltip = null): self {
+    public function addInput(string $text, string $placeholder = "", ?string $default = null, ?string $label = null, ?string $tooltip = null): self {
         $content = ["type" => "input", "text" => $text, "placeholder" => $placeholder];
         if ($default !== null) {
             $content["default"] = $default;
